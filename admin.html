@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Admin Dashboard — Zunaisha Home Kitchen Larkana</title>
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+  <!-- Quick Platform Navigation Bar -->
+  <aside class="platform-bar" aria-label="Platform Panels">
+    <span>🔥 Zunaisha Kitchen Larkana:</span>
+    <nav class="panel-links">
+      <a href="index.html" class="panel-link">🏠 Home</a>
+      <a href="customer.html" class="panel-link">👤 Customer Panel</a>
+      <a href="Restaurant.html" class="panel-link">🍳 Kitchen Panel</a>
+      <a href="Delivery.html" class="panel-link">🛵 Rider Panel</a>
+      <a href="admin.html" class="panel-link active">⚙️ Admin Dashboard</a>
+    </nav>
+  </aside>
+
+  <!-- Sticky Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <a href="admin.html" style="display:flex; align-items:center; gap:10px;">
+          <div class="flame-icon-box">
+            <svg class="flame-svg" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2C9.5 5.5 8 8 8 11.5C8 14.5 10 17 12 17C14 17 16 14.5 16 11.5C16 9 14.5 6.5 12 2Z" fill="#ffedd5"/>
+              <path d="M12 6C10.5 8 9.5 10 9.5 12C9.5 14 10.8 15.5 12 15.5C13.2 15.5 14.5 14 14.5 12C14.5 10 13.5 8 12 6Z" fill="#ff5722"/>
+              <path d="M12 11C11.2 12 10.8 13 10.8 14C10.8 15 11.4 15.8 12 15.8C12.6 15.8 13.2 15 13.2 14C13.2 13 12.8 12 12 11Z" fill="#ffeb3b"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-title">Admin Management Hub</h1>
+            <span class="brand-subtitle">Zunaisha Home Kitchen Larkana</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn btn-outline btn-sm" onclick="openFirebaseSettingsModal()">🔥 Firebase Setup</button>
+        <span id="adminGreeting" style="font-size:0.85rem; color:var(--brand-amber); font-weight:700;">Admin</span>
+        <button class="btn btn-secondary btn-sm" onclick="logoutAdmin()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Dashboard Container -->
+  <main class="dashboard-container">
+    
+    <!-- KPI Analytics Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(59,130,246,0.15); color:var(--brand-blue);">📋</div>
+        <div>
+          <div class="stat-val" id="statAdminTotalOrders">0</div>
+          <div class="stat-label">Total Orders Placed</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(249,115,22,0.15); color:var(--brand-orange);">⏳</div>
+        <div>
+          <div class="stat-val" id="statAdminPending">0</div>
+          <div class="stat-label">Pending Orders</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(16,185,129,0.15); color:var(--brand-green);">✅</div>
+        <div>
+          <div class="stat-val" id="statAdminDelivered">0</div>
+          <div class="stat-label">Completed Deliveries</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(245,158,11,0.15); color:var(--brand-amber);">💰</div>
+        <div>
+          <div class="stat-val" id="statAdminRevenue">Rs. 0</div>
+          <div class="stat-label">Total Revenue (COD)</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(139,92,246,0.15); color:var(--brand-purple);">🛵</div>
+        <div>
+          <div class="stat-val" id="statAdminActiveRiders">2</div>
+          <div class="stat-label">Larkana Delivery Riders</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div style="display:flex; gap:10px; margin-bottom:24px; border-bottom:1px solid var(--border-subtle); padding-bottom:12px; overflow-x:auto;">
+      <button class="btn btn-flame btn-sm" id="tabBtnAdminOrders" onclick="switchAdminTab('orders')">
+        📦 Live Orders Management
+      </button>
+      <button class="btn btn-outline btn-sm" id="tabBtnAdminMenu" onclick="switchAdminTab('menu')">
+        🍽️ Menu & Dishes CRUD
+      </button>
+      <button class="btn btn-outline btn-sm" id="tabBtnAdminRiders" onclick="switchAdminTab('riders')">
+        🛵 Delivery Riders Team
+      </button>
+      <button class="btn btn-outline btn-sm" id="tabBtnAdminUsers" onclick="switchAdminTab('users')">
+        👥 Users & Roles
+      </button>
+      <button class="btn btn-outline btn-sm" id="tabBtnAdminSettings" onclick="switchAdminTab('settings')">
+        ⚙️ Restaurant Settings
+      </button>
+    </div>
+
+    <!-- TAB 1: ORDERS MANAGEMENT -->
+    <section id="panelAdminOrders">
+      <!-- Search & Status Filter Row -->
+      <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px;">
+        <div style="flex:1; min-width:240px;">
+          <input type="text" id="orderSearchQuery" class="form-control" placeholder="Search by Order ID, Customer Name, or Phone..." oninput="filterAdminOrders()">
+        </div>
+
+        <div style="display:flex; gap:8px; overflow-x:auto;">
+          <select id="orderStatusFilter" class="form-control" style="width:auto;" onchange="filterAdminOrders()">
+            <option value="all">All Statuses</option>
+            <option value="pending">⏳ Pending</option>
+            <option value="confirmed">👍 Confirmed</option>
+            <option value="preparing">🍳 Preparing</option>
+            <option value="ready">📦 Ready</option>
+            <option value="out_for_delivery">🛵 Out for Delivery</option>
+            <option value="delivered">✅ Delivered</option>
+            <option value="cancelled">❌ Cancelled</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Orders Data Table -->
+      <div class="orders-table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Address (Larkana)</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Assigned Rider</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminOrdersTableBody">
+            <tr>
+              <td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">
+                Loading orders from Firebase Realtime Database...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 2: MENU & DISHES CRUD -->
+    <section id="panelAdminMenu" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+        <div>
+          <h3 style="font-size:1.3rem; font-weight:800;">Larkana Home Kitchen Menu Items</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary);">Add, edit, or delete dishes and update prices in Pakistani Rupees.</p>
+        </div>
+        <button class="btn btn-flame btn-sm" onclick="openFoodEditModal(null)">
+          + Add New Food Item
+        </button>
+      </div>
+
+      <div class="orders-table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Dish Name</th>
+              <th>Category</th>
+              <th>Price (PKR)</th>
+              <th>Availability</th>
+              <th>Featured</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminMenuTableBody">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 3: RIDERS TEAM -->
+    <section id="panelAdminRiders" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+        <div>
+          <h3 style="font-size:1.3rem; font-weight:800;">Larkana Delivery Riders Fleet</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary);">Manage motorbike riders dispatched across Larkana City.</p>
+        </div>
+        <button class="btn btn-flame btn-sm" onclick="openAddRiderModal()">+ Register New Rider</button>
+      </div>
+
+      <div class="orders-table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Rider ID</th>
+              <th>Rider Name</th>
+              <th>Phone Number</th>
+              <th>Vehicle / Area</th>
+              <th>Shift Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminRidersTableBody">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 4: USERS & ROLES -->
+    <section id="panelAdminUsers" style="display:none;">
+      <div style="margin-bottom:18px;">
+        <h3 style="font-size:1.3rem; font-weight:800;">Registered Customers & Staff Accounts</h3>
+        <p style="font-size:0.85rem; color:var(--text-secondary);">View registered users in Firebase Auth / Database and their assigned roles.</p>
+      </div>
+
+      <div class="orders-table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>UID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Role</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="adminUsersTableBody">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 5: RESTAURANT SETTINGS -->
+    <section id="panelAdminSettings" style="display:none;">
+      <div style="max-width:700px; background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:24px;">
+        <h3 style="font-size:1.3rem; font-weight:800; margin-bottom:16px; color:var(--brand-orange);">
+          Business & Delivery Policy Configuration
+        </h3>
+
+        <form id="restaurantSettingsForm" onsubmit="handleSaveSettings(event)">
+          <div class="form-group">
+            <label class="form-label">Business Name</label>
+            <input type="text" id="setBusinessName" class="form-control" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="text" id="setPhone" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">WhatsApp Number</label>
+              <input type="text" id="setWhatsapp" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Larkana Kitchen Physical Address</label>
+            <input type="text" id="setAddress" class="form-control" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div class="form-group">
+              <label class="form-label">Opening Hours</label>
+              <input type="text" id="setHours" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Average Prep Time</label>
+              <input type="text" id="setPrepTime" class="form-control" required>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div class="form-group">
+              <label class="form-label">Base Delivery Fee (PKR)</label>
+              <input type="number" id="setDeliveryFee" class="form-control" min="0" required>
+              <small style="color:var(--text-muted); font-size:0.75rem;">Set to 0 for Free Delivery</small>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Min Order for Free Delivery (PKR)</label>
+              <input type="number" id="setMinFreeDelivery" class="form-control" min="0" required>
+              <small style="color:var(--text-muted); font-size:0.75rem;">0 means always free</small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Free Delivery Promotional Banner Message</label>
+            <input type="text" id="setFreeMsg" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Kitchen Status</label>
+            <select id="setIsKitchenOpen" class="form-control">
+              <option value="true">🟢 Kitchen is Open & Accepting Orders</option>
+              <option value="false">🔴 Kitchen is Closed</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-flame" style="margin-top:12px;">
+            💾 Save Restaurant Settings
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Food CRUD Modal -->
+  <div class="modal-overlay" id="foodCrudModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="foodModalTitle">Add New Food Item</h3>
+        <button class="modal-close" onclick="closeFoodModal()">&times;</button>
+      </div>
+
+      <form id="foodCrudForm" onsubmit="handleSaveFood(event)">
+        <input type="hidden" id="editFoodId">
+
+        <div class="form-group">
+          <label class="form-label">Food Name *</label>
+          <input type="text" id="foodNameInput" class="form-control" required placeholder="e.g. Special Chicken Tikka Biryani">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Category *</label>
+          <select id="foodCategorySelect" class="form-control" required>
+            <option value="Chicken Biryani">Chicken Biryani</option>
+            <option value="Burgers">Burgers</option>
+            <option value="Pizza">Pizza</option>
+            <option value="Rolls and Shawarma">Rolls and Shawarma</option>
+            <option value="Fried Chicken">Fried Chicken</option>
+            <option value="Samosas">Samosas</option>
+            <option value="Pasta and Macaroni">Pasta and Macaroni</option>
+            <option value="Chapati and Paratha">Chapati and Paratha</option>
+            <option value="Deals and Combos">Deals and Combos</option>
+            <option value="Drinks">Drinks</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Price in Pakistani Rupees (PKR) *</label>
+          <input type="number" id="foodPriceInput" class="form-control" required min="1" placeholder="350">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea id="foodDescInput" class="form-control" placeholder="Describe spices, serving size, and ingredients..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Image URL *</label>
+          <input type="url" id="foodImageInput" class="form-control" required placeholder="https://images.unsplash.com/...">
+          <small style="color:var(--text-muted); font-size:0.75rem;">Uses direct image links or Unsplash food URLs.</small>
+        </div>
+
+        <div style="display:flex; gap:20px; margin:16px 0;">
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+            <input type="checkbox" id="foodAvailableCheck" checked>
+            <span>Available for Order</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+            <input type="checkbox" id="foodFeaturedCheck">
+            <span>Featured on Homepage</span>
+          </label>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:18px;">
+          <button type="submit" class="btn btn-flame" style="flex:1;">Save Dish</button>
+          <button type="button" class="btn btn-secondary" onclick="closeFoodModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Assign Rider Modal -->
+  <div class="modal-overlay" id="assignRiderModal">
+    <div class="modal-content" style="max-width:400px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Assign Delivery Rider</h3>
+        <button class="modal-close" onclick="closeAssignRiderModal()">&times;</button>
+      </div>
+      <input type="hidden" id="assignOrderId">
+      <div class="form-group">
+        <label class="form-label">Choose Rider for Larkana City</label>
+        <select id="riderSelectDropdown" class="form-control">
+          <!-- Populated from riders in RTDB -->
+        </select>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button class="btn btn-flame" style="flex:1;" onclick="confirmRiderAssignment()">Assign Rider</button>
+        <button class="btn btn-secondary" onclick="closeAssignRiderModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Printable Customer Receipt Modal -->
+  <div class="modal-overlay" id="receiptPrintModal">
+    <div class="modal-content" style="max-width:480px; background:#fff; color:#000;">
+      <div style="text-align:center; border-bottom:2px dashed #000; padding-bottom:12px; margin-bottom:12px;">
+        <h3 style="font-size:1.4rem; font-weight:900; margin-bottom:2px;">ZUNAISHA HOME KITCHEN</h3>
+        <p style="font-size:0.85rem;">VIP Road / Station Road, Larkana, Sindh</p>
+        <p style="font-size:0.85rem;">Phone / WhatsApp: 03133744437</p>
+        <h4 style="font-size:1.1rem; margin-top:6px; font-weight:800;" id="recOrderId">RECEIPT #ZNK-0000</h4>
+        <p style="font-size:0.8rem; color:#444;" id="recDate">Date: Oct 19, 2026</p>
+      </div>
+
+      <div style="margin-bottom:12px; font-size:0.88rem;">
+        <div><strong>Customer:</strong> <span id="recCustomerName"></span></div>
+        <div><strong>Phone:</strong> <span id="recCustomerPhone"></span></div>
+        <div><strong>Delivery Address:</strong> <span id="recCustomerAddress"></span></div>
+        <div><strong>Rider:</strong> <span id="recRider"></span></div>
+      </div>
+
+      <table style="width:100%; border-collapse:collapse; margin-bottom:12px; font-size:0.9rem;">
+        <thead>
+          <tr style="border-bottom:1px solid #000; text-align:left;">
+            <th style="padding:4px 0;">Qty</th>
+            <th style="padding:4px 0;">Item</th>
+            <th style="padding:4px 0; text-align:right;">Total</th>
+          </tr>
+        </thead>
+        <tbody id="recItemsBody">
+        </tbody>
+      </table>
+
+      <div style="border-top:1px dashed #000; padding-top:8px; font-size:0.95rem;">
+        <div style="display:flex; justify-content:space-between;">
+          <span>Subtotal:</span>
+          <span id="recSubtotal">Rs. 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Delivery Fee (Larkana):</span>
+          <span id="recDeliveryFee">FREE</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-weight:900; font-size:1.15rem; margin-top:4px;">
+          <span>Grand Total:</span>
+          <span id="recGrandTotal">Rs. 0</span>
+        </div>
+        <div style="font-size:0.85rem; color:#555; margin-top:4px; text-align:center;">
+          Payment Method: Cash on Delivery (COD)
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:18px;" class="no-print">
+        <button class="btn btn-flame" style="flex:1;" onclick="window.print()">🖨️ Print Receipt</button>
+        <button class="btn btn-secondary" onclick="closeReceiptModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

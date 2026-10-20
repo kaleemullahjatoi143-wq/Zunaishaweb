@@ -1,0 +1,39 @@
+{
+  "rules": {
+    "settings": {
+      ".read": true,
+      ".write": true
+    },
+    "categories": {
+      ".read": true,
+      ".write": true
+    },
+    "foods": {
+      ".read": true,
+      ".write": true
+    },
+    "riders": {
+      ".read": true,
+      ".write": true
+    },
+    "users": {
+      "$uid": {
+        ".read": true,
+        ".write": true
+      }
+    },
+    "orders": {
+      ".read": true,
+      "$orderId": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['customerId', 'total', 'status'])"
+      }
+    },
+    "orderStatusHistory": {
+      ".read": true,
+      "$orderId": {
+        ".write": true
+      }
+    }
+  }
+}

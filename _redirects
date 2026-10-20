@@ -1,0 +1,10 @@
+# Netlify Redirects Rules
+/customer          /customer.html      200
+/admin             /admin.html         200
+/restaurant        /Restaurant.html    200
+/restaurant.html   /Restaurant.html    200
+/kitchen           /Restaurant.html    200
+/delivery          /Delivery.html      200
+/delivery.html     /Delivery.html      200
+/rider             /Delivery.html      200
+/menu              /index.html         200

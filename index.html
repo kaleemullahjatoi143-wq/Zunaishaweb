@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Zunaisha Home Kitchen Larkana — Food Delivery</title>
+  <meta name="description" content="Fresh, hygienic, delicious homemade biryani, burgers, pizza, shawarma, and fast food delivered hot across Larkana City. Order via WhatsApp or online.">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Firebase Compat SDKs (For seamless browser integration without build tools) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+  <!-- Quick Platform Navigation Bar (Seamless panel switching for testing & demo) -->
+  <aside class="platform-bar" aria-label="Platform Panels">
+    <span>🔥 Zunaisha Kitchen Larkana:</span>
+    <nav class="panel-links">
+      <a href="index.html" class="panel-link active">🏠 Home</a>
+      <a href="customer.html" class="panel-link">👤 Customer Panel</a>
+      <a href="Restaurant.html" class="panel-link">🍳 Kitchen Panel</a>
+      <a href="Delivery.html" class="panel-link">🛵 Rider Panel</a>
+      <a href="admin.html" class="panel-link">⚙️ Admin Dashboard</a>
+    </nav>
+  </aside>
+
+  <!-- Sticky Header with Logo & Cart Button -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <div class="flame-icon-box" title="Zunaisha Fresh Kitchen">
+          <svg class="flame-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C9.5 5.5 8 8 8 11.5C8 14.5 10 17 12 17C14 17 16 14.5 16 11.5C16 9 14.5 6.5 12 2Z" fill="#ffedd5"/>
+            <path d="M12 6C10.5 8 9.5 10 9.5 12C9.5 14 10.8 15.5 12 15.5C13.2 15.5 14.5 14 14.5 12C14.5 10 13.5 8 12 6Z" fill="#ff5722"/>
+            <path d="M12 11C11.2 12 10.8 13 10.8 14C10.8 15 11.4 15.8 12 15.8C12.6 15.8 13.2 15 13.2 14C13.2 13 12.8 12 12 11Z" fill="#ffeb3b"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">Zunaisha Home Kitchen</h1>
+          <span class="brand-subtitle">📍 Larkana City, Sindh</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#menu" class="nav-link active">Menu</a>
+        <a href="#categories" class="nav-link">Categories</a>
+        <a href="#offers" class="nav-link">Offers</a>
+        <a href="#about" class="nav-link">About Us</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <div class="header-actions">
+        <div id="authHeaderContainer">
+          <button class="btn btn-outline btn-sm" onclick="openAuthModal('login')">Login</button>
+        </div>
+
+        <button class="cart-btn" onclick="toggleCartDrawer()" aria-label="View Shopping Cart">
+          <span>🛒</span>
+          <span style="font-weight:700; font-size:0.88rem;">Cart</span>
+          <span class="cart-badge" style="display:none;">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-container">
+      <div class="hero-text-content">
+        <div class="hero-tag">
+          <span>🛵 Free Fast Delivery Across Larkana City</span>
+        </div>
+        <h2 class="hero-title">
+          Hot, Fresh & Delicious <span>Home Kitchen</span> Meals in Larkana
+        </h2>
+        <p class="hero-description">
+          Taste the authentic spices of Larkana! From signature Sindhi Chicken Biryani and loaded Crispy Zinger Burgers to cheesy Pan Pizzas and family deals. Freshly cooked with pure hygiene and delivered right to your doorstep.
+        </p>
+
+        <div class="hero-features">
+          <div class="hero-feature-item">
+            <span>🍗</span> 100% Fresh Halal Ingredients
+          </div>
+          <div class="hero-feature-item">
+            <span>⏱️</span> 25-35 Mins Average Delivery
+          </div>
+          <div class="hero-feature-item">
+            <span>💵</span> Cash on Delivery
+          </div>
+        </div>
+
+        <div class="hero-cta">
+          <a href="#menu" class="btn btn-flame btn-lg">🍽️ Order Online Now</a>
+          <a href="https://wa.me/923133744437?text=Assalam-o-Alaikum%20Zunaisha%20Kitchen%20Larkana!%20I%20would%20like%20to%20place%20an%20order." target="_blank" class="btn btn-secondary btn-lg" style="background:#25d366; color:#fff; border:none;">
+            💬 WhatsApp: 03133744437
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-media">
+        <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=700&auto=format&fit=crop&q=80" alt="Delicious Sindhi Biryani" class="hero-card-img">
+        <div class="hero-float-badge">
+          <span style="font-size:1.8rem;">🔥</span>
+          <div>
+            <div style="font-weight:800; font-size:0.95rem; color:#fff;">Larkana Special Biryani</div>
+            <div style="font-size:0.8rem; color:var(--brand-amber);">Top Rated Home Chef Choice</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Scroll Section -->
+  <section id="categories" class="category-section">
+    <div class="section-head">
+      <div>
+        <h3 class="section-title">Explore Categories</h3>
+        <p class="section-subtitle">Pick your favorite flavors from Larkana's finest home kitchen</p>
+      </div>
+    </div>
+    <div class="category-scroll" id="categoryScrollList">
+      <button class="category-pill active" onclick="filterCategory('all')">🌟 All Dishes</button>
+      <!-- Injected via JavaScript from Firebase DB -->
+    </div>
+  </section>
+
+  <!-- Search & Filter Controls -->
+  <div class="filter-row">
+    <div class="search-input-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="foodSearchInput" class="search-input" placeholder="Search biryani, zinger, pizza, rolls, pasta..." oninput="handleFoodSearch()">
+    </div>
+    <button class="btn btn-secondary" onclick="toggleFeaturedFilter()" id="featuredFilterBtn">⭐ Featured Specials</button>
+  </div>
+
+  <!-- Menu Grid Section -->
+  <main id="menu" class="menu-grid-section">
+    <div class="section-head" style="margin-bottom:20px;">
+      <div>
+        <h3 class="section-title" id="activeCategoryHeading">Our Fresh Menu</h3>
+        <p class="section-subtitle" id="activeCategorySubheading">Cooked fresh to order in Larkana</p>
+      </div>
+      <div id="kitchenStatusNotice" style="font-size:0.88rem; font-weight:700; color:var(--brand-green);">
+        ● Kitchen is Open & Accepting Orders
+      </div>
+    </div>
+
+    <!-- Food items loaded from Firebase Realtime Database -->
+    <div class="food-grid" id="foodItemsContainer">
+      <div style="grid-column: 1/-1; text-align:center; padding: 40px; color:var(--text-muted);">
+        Loading delicious food items from database...
+      </div>
+    </div>
+  </main>
+
+  <!-- Special Offers Banner -->
+  <section id="offers" class="category-section" style="margin-bottom:40px;">
+    <div style="background: linear-gradient(135deg, #1b1e2b 0%, #11131a 100%); border:1px solid var(--border-glow); border-radius:var(--radius-lg); padding:28px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:20px;">
+      <div>
+        <span class="status-pill status-preparing">Special Larkana Combo Deal</span>
+        <h3 style="font-size:1.6rem; margin:10px 0 6px;">Mega Family Feast (Feeds 3-4 Persons)</h3>
+        <p style="color:var(--text-secondary); max-width:540px;">
+          Includes 1 Large Chicken Tikka Pizza + 2 Crispy Zinger Burgers + 1.5L Chilled Soft Drink + Hot Fries for just <strong>Rs. 2,199</strong> with Free Delivery across Larkana!
+        </p>
+      </div>
+      <button class="btn btn-flame btn-lg" onclick="orderComboDirectly()">Order Deal Now</button>
+    </div>
+  </section>
+
+  <!-- About Us & Contact Section -->
+  <section id="about" class="category-section" style="margin-bottom:40px;">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:24px;">
+      <div style="background:var(--bg-card); border:1px solid var(--border-subtle); padding:24px; border-radius:var(--radius-lg);">
+        <h3 style="font-size:1.3rem; margin-bottom:12px; color:var(--brand-amber);">About Zunaisha Home Kitchen</h3>
+        <p style="font-size:0.92rem; line-height:1.6; color:var(--text-secondary);">
+          Zunaisha Home Kitchen is Larkana's beloved food delivery brand, crafting homemade delicacies with high culinary standards. We use pure vegetable cooking oil, fresh local chicken, authentic Sindhi spices, and premium mozzarella. Every meal is cooked fresh to order with love and care.
+        </p>
+      </div>
+
+      <div id="contact" style="background:var(--bg-card); border:1px solid var(--border-subtle); padding:24px; border-radius:var(--radius-lg);">
+        <h3 style="font-size:1.3rem; margin-bottom:12px; color:var(--brand-orange);">Contact & Location</h3>
+        <p style="font-size:0.92rem; margin-bottom:8px;">📍 <strong>Address:</strong> VIP Road / Station Road, Larkana City, Sindh, Pakistan</p>
+        <p style="font-size:0.92rem; margin-bottom:8px;">📞 <strong>Phone:</strong> 03133744437</p>
+        <p style="font-size:0.92rem; margin-bottom:8px;">💬 <strong>WhatsApp:</strong> 03133744437</p>
+        <p style="font-size:0.92rem; margin-bottom:8px;">⏰ <strong>Opening Hours:</strong> 11:00 AM - 11:30 PM (Asia/Karachi)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h4 style="color:var(--brand-orange);">Zunaisha Home Kitchen</h4>
+        <p style="font-size:0.88rem; margin-bottom:12px;">Fresh fast food and traditional kitchen catering for homes and offices in Larkana City.</p>
+        <p style="font-size:0.85rem; color:var(--text-muted);">Phone & WhatsApp: 03133744437</p>
+      </div>
+      <div class="footer-col">
+        <h4>Popular Categories</h4>
+        <ul class="footer-links">
+          <li><a href="#menu" onclick="filterCategory('Chicken Biryani')">Sindhi Chicken Biryani</a></li>
+          <li><a href="#menu" onclick="filterCategory('Burgers')">Crispy Zinger Burgers</a></li>
+          <li><a href="#menu" onclick="filterCategory('Pizza')">Pan & Thin Crust Pizza</a></li>
+          <li><a href="#menu" onclick="filterCategory('Rolls and Shawarma')">Shawarma & Paratha Rolls</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Staff & Portals</h4>
+        <ul class="footer-links">
+          <li><a href="customer.html">Customer Orders & History</a></li>
+          <li><a href="Restaurant.html">Kitchen Order Dashboard</a></li>
+          <li><a href="Delivery.html">Delivery Rider App</a></li>
+          <li><a href="admin.html">Administrator Control</a></li>
+          <li><a href="javascript:void(0)" onclick="openFirebaseSettingsModal()">Firebase Database Settings</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>&copy; 2026 Zunaisha Home Kitchen Larkana. All rights reserved.</div>
+      <div>Designed for Larkana City, Sindh, Pakistan</div>
+    </div>
+  </footer>
+
+  <!-- Slide-out Cart Drawer -->
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer-head">
+      <h3 style="font-size:1.15rem; font-weight:800; display:flex; align-items:center; gap:8px;">
+        🛒 Your Cart (<span id="cartItemCountText">0</span>)
+      </h3>
+      <button class="modal-close" onclick="toggleCartDrawer()">&times;</button>
+    </div>
+
+    <div class="cart-drawer-body" id="cartItemsList">
+      <!-- Items dynamically populated -->
+    </div>
+
+    <div class="cart-drawer-foot">
+      <div class="bill-row">
+        <span>Subtotal</span>
+        <span id="cartSubtotalText">Rs. 0</span>
+      </div>
+      <div class="bill-row">
+        <span>Delivery Fee (Larkana)</span>
+        <span id="cartDeliveryFeeText" style="color:var(--brand-green); font-weight:700;">FREE</span>
+      </div>
+      <div class="bill-row total">
+        <span>Total Amount</span>
+        <span id="cartTotalText">Rs. 0</span>
+      </div>
+      
+      <button class="btn btn-flame btn-lg" onclick="proceedToCheckout()" id="checkoutBtn" style="width:100%; margin-top:8px;">
+        Proceed to Checkout →
+      </button>
+      <button class="btn btn-outline btn-sm" onclick="clearCart()" style="width:100%;">
+        Clear Cart
+      </button>
+    </div>
+  </div>
+
+  <!-- Floating WhatsApp Action -->
+  <a href="https://wa.me/923133744437?text=Assalam-o-Alaikum%20Zunaisha%20Home%20Kitchen%20Larkana!" target="_blank" class="whatsapp-float" title="Chat on WhatsApp (03133744437)" aria-label="WhatsApp Order">
+    💬
+  </a>
+
+  <!-- Auth Modal (Login / Register) -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="authModalTitle">Customer Login</h3>
+        <button class="modal-close" onclick="closeAuthModal()">&times;</button>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-bottom:16px;">
+        <button class="btn btn-outline btn-sm" id="tabLogin" style="flex:1;" onclick="switchAuthTab('login')">Login</button>
+        <button class="btn btn-outline btn-sm" id="tabRegister" style="flex:1;" onclick="switchAuthTab('register')">Register</button>
+      </div>
+
+      <form id="authForm" onsubmit="handleAuthSubmit(event)">
+        <div class="form-group" id="nameGroup" style="display:none;">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="authName" class="form-control" placeholder="e.g. Kaleemullah Jatoi">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="authEmail" class="form-control" required placeholder="name@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="authPassword" class="form-control" required placeholder="••••••••">
+        </div>
+        <div class="form-group" id="phoneGroup" style="display:none;">
+          <label class="form-label">Phone / WhatsApp Number</label>
+          <input type="tel" id="authPhone" class="form-control" placeholder="03133744437">
+        </div>
+        <div class="form-group" id="addressGroup" style="display:none;">
+          <label class="form-label">Larkana Delivery Address</label>
+          <input type="text" id="authAddress" class="form-control" placeholder="House #, Street, Area, Larkana">
+        </div>
+
+        <button type="submit" class="btn btn-flame" style="width:100%; margin-top:10px;" id="authSubmitBtn">
+          Sign In
+        </button>
+      </form>
+
+      <div style="margin-top:16px; padding:12px; background:var(--bg-surface); border-radius:var(--radius-sm); font-size:0.8rem; color:var(--text-muted);">
+        <strong>Quick Demo Access:</strong><br>
+        • Customer: any email & password (creates account automatically)<br>
+        • Kitchen: <code>kitchen@zunaisha.com</code><br>
+        • Rider: <code>rider1@zunaisha.com</code><br>
+        • Admin: <code>admin@zunaisha.com</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    // =========================================================================
+    // HOMEPAGE CONTROLLER
+    // =========================================================================
+    let allFoods = [];
+    let selectedCategory = "all";
+    let isFeaturedOnly = false;
+    let restaurantSettings = {};
+    let authMode = "login";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initAuthStatus();
+      loadSettings();
+      loadCategories();
+      loadFoods();
+      renderCartDrawer();
+      window.addEventListener("cart-updated", renderCartDrawer);
+    });
+
+    // 1. Auth Status Header
+    function initAuthStatus() {
+      if (!window.ZUN_AUTH) return;
+      window.ZUN_AUTH.onAuthStateChanged(user => {
+        const container = document.getElementById("authHeaderContainer");
+        if (!container) return;
+        if (user) {
+          const roleBadge = user.role !== "customer" ? ` <span style="color:var(--brand-amber); font-size:0.75rem;">(${user.role})</span>` : "";
+          container.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px;">
+              <a href="customer.html" class="btn btn-secondary btn-sm" style="font-size:0.85rem;">
+                👤 ${user.displayName || user.email.split('@')[0]}${roleBadge}
+              </a>
+              <button class="btn btn-outline btn-sm" onclick="logoutUser()">Logout</button>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `
+            <button class="btn btn-outline btn-sm" onclick="openAuthModal('login')">Login</button>
+          `;
+        }
+      });
+    }
+
+    async function logoutUser() {
+      await window.ZUN_AUTH.signOut();
+      showToast("Logged out successfully.", "info");
+    }
+
+    // 2. Load Settings from Firebase RTDB
+    function loadSettings() {
+      window.ZUN_DB.ref("settings").on("value", snapshot => {
+        restaurantSettings = snapshot.val() || {};
+        const notice = document.getElementById("kitchenStatusNotice");
+        if (notice) {
+          if (restaurantSettings.isKitchenOpen === false) {
+            notice.innerHTML = "<span style='color:var(--brand-red);'>● Kitchen is currently closed</span>";
+          } else {
+            notice.innerHTML = "<span style='color:var(--brand-green);'>● Kitchen is Open & Delivering across Larkana</span>";
+          }
+        }
+        renderCartDrawer();
+      });
+    }
+
+    // 3. Load Categories from Firebase RTDB
+    function loadCategories() {
+      window.ZUN_DB.ref("categories").on("value", snapshot => {
+        const categories = snapshot.val() || {};
+        const container = document.getElementById("categoryScrollList");
+        if (!container) return;
+
+        let html = `<button class="category-pill ${selectedCategory === 'all' ? 'active' : ''}" onclick="filterCategory('all')">🌟 All Dishes</button>`;
+        Object.values(categories).forEach(cat => {
+          const isActive = selectedCategory === cat.name ? "active" : "";
+          html += `<button class="category-pill ${isActive}" onclick="filterCategory('${cat.name}')">${cat.icon || '🍽️'} ${cat.name}</button>`;
+        });
+        container.innerHTML = html;
+      });
+    }
+
+    // 4. Load Foods from Firebase RTDB
+    function loadFoods() {
+      window.ZUN_DB.ref("foods").on("value", snapshot => {
+        const data = snapshot.val() || {};
+        allFoods = Object.values(data);
+        renderFoodGrid();
+      });
+    }
+
+    function renderFoodGrid() {
+      const container = document.getElementById("foodItemsContainer");
+      if (!container) return;
+
+      const query = (document.getElementById("foodSearchInput").value || "").trim().toLowerCase();
+
+      let filtered = allFoods.filter(item => {
+        const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
+        const matchesFeatured = !isFeaturedOnly || item.featured === true;
+        const matchesSearch = !query || 
+          (item.name && item.name.toLowerCase().includes(query)) ||
+          (item.description && item.description.toLowerCase().includes(query)) ||
+          (item.category && item.category.toLowerCase().includes(query));
+        return matchesCategory && matchesFeatured && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1/-1; text-align:center; padding:50px 20px; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-subtle);">
+            <div style="font-size:3rem; margin-bottom:12px;">🍽️</div>
+            <h4 style="font-size:1.2rem; margin-bottom:8px;">No Food Items Found</h4>
+            <p style="color:var(--text-muted); font-size:0.9rem;">Try selecting another category or clear your search term.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => `
+        <article class="food-card" data-id="${item.id}">
+          <div class="food-card-img-wrap">
+            <img src="${item.imageUrl}" alt="${item.name}" class="food-card-img" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600'">
+            ${item.featured ? '<span class="food-badge-featured">🔥 Featured</span>' : ''}
+            <span class="food-badge-category">${item.category || 'Kitchen Special'}</span>
+            ${!item.available ? '<span class="food-badge-unavailable">Sold Out</span>' : ''}
+          </div>
+          <div class="food-card-body">
+            <h4 class="food-card-title">${item.name}</h4>
+            <p class="food-card-desc">${item.description || 'Prepared fresh with pure ingredients.'}</p>
+            <div class="food-card-foot">
+              <div class="food-price">${formatPKR(item.price)}</div>
+              ${item.available !== false ? `
+                <button class="btn btn-flame btn-sm" onclick='handleAddToCart(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
+                  + Add to Cart
+                </button>
+              ` : `
+                <button class="btn btn-secondary btn-sm" disabled style="opacity:0.6; cursor:not-allowed;">
+                  Unavailable
+                </button>
+              `}
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function filterCategory(catName) {
+      selectedCategory = catName;
+      document.getElementById("activeCategoryHeading").textContent = catName === "all" ? "Our Fresh Menu" : catName;
+      loadCategories(); // update active pill
+      renderFoodGrid();
+    }
+
+    function handleFoodSearch() {
+      renderFoodGrid();
+    }
+
+    function toggleFeaturedFilter() {
+      isFeaturedOnly = !isFeaturedOnly;
+      const btn = document.getElementById("featuredFilterBtn");
+      if (isFeaturedOnly) {
+        btn.classList.add("btn-flame");
+        btn.classList.remove("btn-secondary");
+      } else {
+        btn.classList.remove("btn-flame");
+        btn.classList.add("btn-secondary");
+      }
+      renderFoodGrid();
+    }
+
+    function handleAddToCart(item) {
+      addToCart(item, 1);
+    }
+
+    function orderComboDirectly() {
+      const combo = allFoods.find(f => f.category === "Deals and Combos") || allFoods[0];
+      if (combo) {
+        addToCart(combo, 1);
+        toggleCartDrawer();
+      }
+    }
+
+    // 5. Cart Drawer Management
+    function toggleCartDrawer() {
+      const drawer = document.getElementById("cartDrawer");
+      if (drawer) drawer.classList.toggle("active");
+    }
+
+    function renderCartDrawer() {
+      const cart = getCart();
+      const itemsList = document.getElementById("cartItemsList");
+      const countText = document.getElementById("cartItemCountText");
+      const subtotalText = document.getElementById("cartSubtotalText");
+      const deliveryText = document.getElementById("cartDeliveryFeeText");
+      const totalText = document.getElementById("cartTotalText");
+
+      if (!itemsList) return;
+
+      const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
+      countText.textContent = totalItems;
+
+      if (cart.length === 0) {
+        itemsList.innerHTML = `
+          <div style="text-align:center; padding:40px 10px; color:var(--text-muted);">
+            <div style="font-size:2.8rem; margin-bottom:10px;">🛒</div>
+            <p style="font-size:0.95rem;">Your cart is currently empty.</p>
+            <p style="font-size:0.8rem; margin-top:6px;">Add dishes from the menu to get started!</p>
+          </div>
+        `;
+        subtotalText.textContent = formatPKR(0);
+        totalText.textContent = formatPKR(0);
+        deliveryText.textContent = "FREE";
+        return;
+      }
+
+      itemsList.innerHTML = cart.map(item => `
+        <div class="cart-item">
+          <img src="${item.imageUrl}" alt="${item.name}" class="cart-item-img" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100'">
+          <div class="cart-item-info">
+            <div class="cart-item-title">${item.name}</div>
+            <div class="cart-item-price">${formatPKR(item.price)}</div>
+          </div>
+          <div class="cart-qty-ctrl">
+            <button class="qty-btn" onclick="updateCartQuantity('${item.id}', ${item.quantity - 1})">-</button>
+            <span style="font-weight:700; font-size:0.9rem; min-width:18px; text-align:center;">${item.quantity}</span>
+            <button class="qty-btn" onclick="updateCartQuantity('${item.id}', ${item.quantity + 1})">+</button>
+          </div>
+          <button onclick="removeFromCart('${item.id}')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:4px;" title="Remove">✕</button>
+        </div>
+      `).join("");
+
+      const { subtotal, deliveryFee, total } = calculateCartTotals(cart, restaurantSettings);
+      subtotalText.textContent = formatPKR(subtotal);
+      deliveryText.textContent = deliveryFee === 0 ? "FREE" : formatPKR(deliveryFee);
+      totalText.textContent = formatPKR(total);
+    }
+
+    function proceedToCheckout() {
+      const cart = getCart();
+      if (cart.length === 0) {
+        showToast("Please add items to your cart before proceeding.", "error");
+        return;
+      }
+      window.location.href = "customer.html#checkout";
+    }
+
+    // 6. Auth Modal Logic
+    function openAuthModal(mode = "login") {
+      authMode = mode;
+      switchAuthTab(mode);
+      const modal = document.getElementById("authModal");
+      if (modal) modal.classList.add("active");
+    }
+
+    function closeAuthModal() {
+      const modal = document.getElementById("authModal");
+      if (modal) modal.classList.remove("active");
+    }
+
+    function switchAuthTab(mode) {
+      authMode = mode;
+      const tabLogin = document.getElementById("tabLogin");
+      const tabReg = document.getElementById("tabRegister");
+      const title = document.getElementById("authModalTitle");
+      const submitBtn = document.getElementById("authSubmitBtn");
+      const nameGroup = document.getElementById("nameGroup");
+      const phoneGroup = document.getElementById("phoneGroup");
+      const addressGroup = document.getElementById("addressGroup");
+
+      if (mode === "login") {
+        tabLogin.classList.add("btn-flame");
+        tabLogin.classList.remove("btn-outline");
+        tabReg.classList.remove("btn-flame");
+        tabReg.classList.add("btn-outline");
+        title.textContent = "Customer Login";
+        submitBtn.textContent = "Sign In";
+        nameGroup.style.display = "none";
+        phoneGroup.style.display = "none";
+        addressGroup.style.display = "none";
+      } else {
+        tabReg.classList.add("btn-flame");
+        tabReg.classList.remove("btn-outline");
+        tabLogin.classList.remove("btn-flame");
+        tabLogin.classList.add("btn-outline");
+        title.textContent = "Create Customer Account";
+        submitBtn.textContent = "Register Account";
+        nameGroup.style.display = "block";
+        phoneGroup.style.display = "block";
+        addressGroup.style.display = "block";
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById("authEmail").value;
+      const password = document.getElementById("authPassword").value;
+
+      try {
+        if (authMode === "login") {
+          await window.ZUN_AUTH.signInWithEmailAndPassword(email, password);
+          showToast("Welcome back!", "success");
+        } else {
+          const name = document.getElementById("authName").value;
+          const phone = document.getElementById("authPhone").value;
+          const address = document.getElementById("authAddress").value;
+          await window.ZUN_AUTH.createUserWithEmailAndPassword(email, password, {
+            name, phone, address, role: "customer"
+          });
+          showToast("Account created successfully!", "success");
+        }
+        closeAuthModal();
+      } catch (err) {
+        showToast(err.message || "Authentication failed.", "error");
+      }
+    }
+  </script>
+</body>
+</html>

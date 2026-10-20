@@ -1,0 +1,74 @@
+# ==============================================================================
+# Netlify Configuration for Zunaisha Home Kitchen Larkana
+# Food Delivery Web Application
+# ==============================================================================
+
+[build]
+  # Publish the root directory where index.html and assets reside
+  publish = "."
+
+# Clean URL Rewrites & Fallbacks
+[[redirects]]
+  from = "/customer"
+  to = "/customer.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/restaurant"
+  to = "/Restaurant.html"
+  status = 200
+
+[[redirects]]
+  from = "/restaurant.html"
+  to = "/Restaurant.html"
+  status = 200
+
+[[redirects]]
+  from = "/kitchen"
+  to = "/Restaurant.html"
+  status = 200
+
+[[redirects]]
+  from = "/delivery"
+  to = "/Delivery.html"
+  status = 200
+
+[[redirects]]
+  from = "/delivery.html"
+  to = "/Delivery.html"
+  status = 200
+
+[[redirects]]
+  from = "/rider"
+  to = "/Delivery.html"
+  status = 200
+
+[[redirects]]
+  from = "/menu"
+  to = "/index.html"
+  status = 200
+
+# Security and Performance Headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(self), microphone=(), camera=()"
+
+# Asset Caching
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, must-revalidate"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"

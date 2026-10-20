@@ -1,0 +1,6 @@
+{
+  "name": "Zunaisha Kitchen",
+  "description": "Food delivery platform for Zunaisha Home Kitchen Larkana with live ordering, customer tracking, kitchen management, and rider dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

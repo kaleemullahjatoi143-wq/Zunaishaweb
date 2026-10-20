@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Delivery Rider Portal — Zunaisha Home Kitchen Larkana</title>
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+  <!-- Quick Platform Navigation Bar -->
+  <aside class="platform-bar" aria-label="Platform Panels">
+    <span>🔥 Zunaisha Kitchen Larkana:</span>
+    <nav class="panel-links">
+      <a href="index.html" class="panel-link">🏠 Home</a>
+      <a href="customer.html" class="panel-link">👤 Customer Panel</a>
+      <a href="Restaurant.html" class="panel-link">🍳 Kitchen Panel</a>
+      <a href="Delivery.html" class="panel-link active">🛵 Rider Panel</a>
+      <a href="admin.html" class="panel-link">⚙️ Admin Dashboard</a>
+    </nav>
+  </aside>
+
+  <!-- Sticky Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <a href="Delivery.html" style="display:flex; align-items:center; gap:10px;">
+          <div class="flame-icon-box">
+            <svg class="flame-svg" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2C9.5 5.5 8 8 8 11.5C8 14.5 10 17 12 17C14 17 16 14.5 16 11.5C16 9 14.5 6.5 12 2Z" fill="#ffedd5"/>
+              <path d="M12 6C10.5 8 9.5 10 9.5 12C9.5 14 10.8 15.5 12 15.5C13.2 15.5 14.5 14 14.5 12C14.5 10 13.5 8 12 6Z" fill="#ff5722"/>
+              <path d="M12 11C11.2 12 10.8 13 10.8 14C10.8 15 11.4 15.8 12 15.8C12.6 15.8 13.2 15 13.2 14C13.2 13 12.8 12 12 11Z" fill="#ffeb3b"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-title">Rider Delivery Portal</h1>
+            <span class="brand-subtitle">Larkana Dispatch Team</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="header-actions">
+        <span id="riderProfileName" style="font-size:0.85rem; color:var(--brand-amber); font-weight:700;"></span>
+        <button class="btn btn-secondary btn-sm" onclick="logoutRider()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Rider Container -->
+  <main class="dashboard-container" style="max-width:900px;">
+    
+    <!-- Rider Shift & Stats Card -->
+    <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:20px; margin-bottom:20px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:16px;">
+      <div>
+        <div style="font-size:1.15rem; font-weight:800; color:#fff;" id="riderDisplayName">Rider: Asadullah Brohi</div>
+        <div style="font-size:0.82rem; color:var(--text-muted);" id="riderVehicleInfo">Bike: LKA-8821 (Honda 70) • Larkana City</div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:12px;">
+        <select id="riderStatusSelect" class="form-control" style="width:auto; padding:6px 12px; font-weight:700;" onchange="updateRiderShiftStatus()">
+          <option value="available">🟢 Available for Orders</option>
+          <option value="busy">🟡 On Delivery (Busy)</option>
+          <option value="offline">⚪ Off Duty (Offline)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Daily Quick Summary -->
+    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom:20px;">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(249,115,22,0.15); color:var(--brand-orange);">🛵</div>
+        <div>
+          <div class="stat-val" id="statActiveDeliveries">0</div>
+          <div class="stat-label">Active Orders</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(16,185,129,0.15); color:var(--brand-green);">✅</div>
+        <div>
+          <div class="stat-val" id="statTodayCompleted">0</div>
+          <div class="stat-label">Completed Today</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(245,158,11,0.15); color:var(--brand-amber);">💵</div>
+        <div>
+          <div class="stat-val" id="statCashCollected">Rs. 0</div>
+          <div class="stat-label">Cash Collected</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rider Tabs -->
+    <div style="display:flex; gap:10px; margin-bottom:18px; border-bottom:1px solid var(--border-subtle); padding-bottom:10px;">
+      <button class="btn btn-flame btn-sm" id="tabBtnRiderActive" onclick="switchRiderTab('active')">
+        📍 Assigned Deliveries (<span id="assignedBadgeCount">0</span>)
+      </button>
+      <button class="btn btn-outline btn-sm" id="tabBtnRiderHistory" onclick="switchRiderTab('history')">
+        📜 Completed Delivery History
+      </button>
+    </div>
+
+    <!-- Active Deliveries Panel -->
+    <section id="panelRiderActive">
+      <div id="assignedDeliveriesContainer" style="display:flex; flex-direction:column; gap:18px;">
+        <div style="text-align:center; padding:50px; color:var(--text-muted); background:var(--bg-card); border-radius:var(--radius-lg);">
+          Loading your assigned deliveries...
+        </div>
+      </div>
+    </section>
+
+    <!-- History Deliveries Panel -->
+    <section id="panelRiderHistory" style="display:none;">
+      <div id="completedDeliveriesContainer" style="display:flex; flex-direction:column; gap:14px;">
+        <!-- Populated via JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/delivery.js"></script>
+</body>
+</html>

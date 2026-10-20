@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Kitchen Order Display — Zunaisha Home Kitchen Larkana</title>
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+  <!-- Quick Platform Navigation Bar -->
+  <aside class="platform-bar" aria-label="Platform Panels">
+    <span>🔥 Zunaisha Kitchen Larkana:</span>
+    <nav class="panel-links">
+      <a href="index.html" class="panel-link">🏠 Home</a>
+      <a href="customer.html" class="panel-link">👤 Customer Panel</a>
+      <a href="Restaurant.html" class="panel-link active">🍳 Kitchen Panel</a>
+      <a href="Delivery.html" class="panel-link">🛵 Rider Panel</a>
+      <a href="admin.html" class="panel-link">⚙️ Admin Dashboard</a>
+    </nav>
+  </aside>
+
+  <!-- Sticky Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <a href="Restaurant.html" style="display:flex; align-items:center; gap:10px;">
+          <div class="flame-icon-box">
+            <svg class="flame-svg" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2C9.5 5.5 8 8 8 11.5C8 14.5 10 17 12 17C14 17 16 14.5 16 11.5C16 9 14.5 6.5 12 2Z" fill="#ffedd5"/>
+              <path d="M12 6C10.5 8 9.5 10 9.5 12C9.5 14 10.8 15.5 12 15.5C13.2 15.5 14.5 14 14.5 12C14.5 10 13.5 8 12 6Z" fill="#ff5722"/>
+              <path d="M12 11C11.2 12 10.8 13 10.8 14C10.8 15 11.4 15.8 12 15.8C12.6 15.8 13.2 15 13.2 14C13.2 13 12.8 12 12 11Z" fill="#ffeb3b"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-title">Kitchen Order Display (KOD)</h1>
+            <span class="brand-subtitle">Chef & Kitchen Staff Portal</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="header-actions">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button id="soundToggleBtn" class="btn btn-outline btn-sm" onclick="toggleAudioAlerts()">
+            🔔 Sound: ON
+          </button>
+          <span id="kitchenStaffName" style="font-size:0.85rem; color:var(--brand-amber); font-weight:700;"></span>
+          <button class="btn btn-secondary btn-sm" onclick="logoutKitchenStaff()">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Kitchen Dashboard -->
+  <main class="dashboard-container">
+    
+    <!-- Top KPI Bar -->
+    <div class="stats-grid">
+      <div class="stat-card" style="border-left: 4px solid var(--brand-orange);">
+        <div class="stat-icon" style="background:rgba(249,115,22,0.15); color:var(--brand-orange);">⏳</div>
+        <div>
+          <div class="stat-val" id="statPendingOrders">0</div>
+          <div class="stat-label">New Incoming Orders</div>
+        </div>
+      </div>
+
+      <div class="stat-card" style="border-left: 4px solid var(--brand-amber);">
+        <div class="stat-icon" style="background:rgba(245,158,11,0.15); color:var(--brand-amber);">🍳</div>
+        <div>
+          <div class="stat-val" id="statCookingOrders">0</div>
+          <div class="stat-label">Currently Cooking</div>
+        </div>
+      </div>
+
+      <div class="stat-card" style="border-left: 4px solid var(--brand-purple);">
+        <div class="stat-icon" style="background:rgba(139,92,246,0.15); color:var(--brand-purple);">📦</div>
+        <div>
+          <div class="stat-val" id="statReadyOrders">0</div>
+          <div class="stat-label">Ready for Pickup</div>
+        </div>
+      </div>
+
+      <div class="stat-card" style="border-left: 4px solid var(--brand-green);">
+        <div class="stat-icon" style="background:rgba(16,185,129,0.15); color:var(--brand-green);">✅</div>
+        <div>
+          <div class="stat-val" id="statCompletedOrders">0</div>
+          <div class="stat-label">Dispatched / Completed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kitchen Navigation & Quick Filters -->
+    <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px;">
+      <div style="display:flex; gap:8px; overflow-x:auto;">
+        <button class="btn btn-flame btn-sm" id="tabBtnActiveKitchen" onclick="switchKitchenTab('active')">
+          🔥 Live Kitchen Pipeline
+        </button>
+        <button class="btn btn-outline btn-sm" id="tabBtnMenuStock" onclick="switchKitchenTab('stock')">
+          📋 Menu Stock & Availability
+        </button>
+        <button class="btn btn-outline btn-sm" id="tabBtnHistoryKitchen" onclick="switchKitchenTab('history')">
+          📜 Kitchen Order Log
+        </button>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:10px;">
+        <label style="font-size:0.85rem; color:var(--text-secondary);">Kitchen Status:</label>
+        <button id="kitchenOpenToggle" class="btn btn-success btn-sm" onclick="toggleKitchenOpenState()">
+          Open for Orders
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 1: LIVE KITCHEN PIPELINE -->
+    <section id="panelKitchenActive">
+      <div id="kitchenOrdersGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(360px, 1fr)); gap:20px;">
+        <div style="grid-column: 1/-1; text-align:center; padding:50px; color:var(--text-muted); background:var(--bg-card); border-radius:var(--radius-lg);">
+          Listening for live incoming orders from Larkana customers...
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: MENU STOCK TOGGLES -->
+    <section id="panelKitchenStock" style="display:none;">
+      <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:24px;">
+        <h3 style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">
+          Menu Item Availability Toggle
+        </h3>
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:20px;">
+          Mark dishes Available or Sold Out in real-time. Changes immediately reflect across the customer app and homepage.
+        </p>
+
+        <div id="kitchenStockItemsList" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:14px;">
+          <!-- Stock toggles injected via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ORDER LOG & ARCHIVE -->
+    <section id="panelKitchenHistory" style="display:none;">
+      <div class="orders-table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Time</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="kitchenHistoryTableBody">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Kitchen Order Slip (Printable KOT Modal) -->
+  <div class="modal-overlay" id="kotPrintModal">
+    <div class="modal-content" style="max-width:440px; background:#fff; color:#000;">
+      <div style="text-align:center; border-bottom:2px dashed #000; padding-bottom:12px; margin-bottom:12px;">
+        <h3 style="font-size:1.4rem; font-weight:900; margin-bottom:4px;">ZUNAISHA HOME KITCHEN</h3>
+        <p style="font-size:0.85rem;">Larkana City • Phone: 03133744437</p>
+        <h4 style="font-size:1.1rem; margin-top:6px; font-weight:800;" id="kotOrderIdTitle">KOT #ZNK-0000</h4>
+        <p style="font-size:0.8rem; color:#444;" id="kotTimeText">Time: 12:00 PM</p>
+      </div>
+
+      <div style="margin-bottom:12px; font-size:0.88rem;">
+        <div><strong>Customer:</strong> <span id="kotCustomerName"></span></div>
+        <div><strong>Phone:</strong> <span id="kotCustomerPhone"></span></div>
+        <div><strong>Address:</strong> <span id="kotCustomerAddress"></span></div>
+        <div id="kotInstructionsRow" style="color:#d9534f; font-weight:bold; margin-top:4px;"></div>
+      </div>
+
+      <table style="width:100%; border-collapse:collapse; margin-bottom:12px; font-size:0.9rem;">
+        <thead>
+          <tr style="border-bottom:1px solid #000; text-align:left;">
+            <th style="padding:4px 0;">Qty</th>
+            <th style="padding:4px 0;">Item Description</th>
+            <th style="padding:4px 0; text-align:right;">Price</th>
+          </tr>
+        </thead>
+        <tbody id="kotItemsTableBody">
+          <!-- Populated dynamically -->
+        </tbody>
+      </table>
+
+      <div style="border-top:1px dashed #000; padding-top:8px; text-align:right; font-size:1rem; font-weight:900;" id="kotTotalText">
+        Total: Rs. 0 (COD)
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:18px;" class="no-print">
+        <button class="btn btn-flame" style="flex:1;" onclick="window.print()">🖨️ Print Slip</button>
+        <button class="btn btn-secondary" onclick="closeKotModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/restaurant.js"></script>
+</body>
+</html>
